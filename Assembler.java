@@ -39,19 +39,7 @@ public class Assembler {
     }
     public Assembler(String instruction) {
         this.instruction = instruction;
-        setopcodeandfunctioncodeandinstructiontype();
-        switch (this.instructionType){
-            case 'r':
-                setregisters();
-                break;
-            case 'i':
-                if (this.functioncode == 8 )
-                    setimmediate();
-                else
-                    setoffset();
-                break;
-            case 'j':
-                break;
+        setopcodeandfunctioncodeandinstructiontypeandregisters();
         }
     }
     @Override
@@ -70,7 +58,7 @@ public class Assembler {
         }
         return s;
     }
-    private void setopcodeandfunctioncodeandinstructiontype(){
+    private void setopcodeandfunctioncodeandinstructiontypeandregisters(){
         String[] splited = instruction.split("\\s+");
         String[] splited2 = splited[1].split(",");
         RegistersFile f = new RegistersFile();
@@ -227,31 +215,6 @@ public class Assembler {
                 this.opcode = 10;
                 this.instructionType = 'i';
                 break;
-        }
-    }
-    private void setoffset(){
-        String[] splited = this.instruction.split("\\s+");
-        String[] splited2 = splited[1].split(",");
-        char [] c = splited2[1].toCharArray();
-        offset = c[0];
-    }
-    private void setimmediate(){
-        String[] splited = this.instruction.split("\\s+");
-        String[] splited2 = splited[1].split(",");
-        immediate = Integer.parseInt(splited2[2]);
-    }
-    private void setregisters() {
-        String[] splited = this.instruction.split("\\s+");
-        String[] splited2 = splited[1].split(",");
-        RegistersFile f = new RegistersFile();
-        if (instructionType == 'r')
-        for (int j = 0 ; j <32 ; j++){
-            if(splited2[0].equals(f.registers[j].name))
-                rd = j;
-            if(splited2[1].equals(f.registers[j].name))
-                rs = j;
-            if(splited2[2].equals(f.registers[j].name))
-                rt = j;
         }
     }
 
