@@ -1,19 +1,25 @@
 package cse116;
 
 public class Main {
-    static PC pc;
     Assembler a;
-    RegistersFile r;
-    InstructionMem im;
-    public Main(){
-        a = new Assembler("add $s1,$s1,$s2");
-        im = new InstructionMem(a.toString());
+    InstructionMem[] instructions;
+    String s;    // the full program coming from the user
+
+    public Main() {
+        instructions = new InstructionMem[1000];
     }
 
     public static void main(String[] args) {
         Main m = new Main();
-        System.out.println(m.a.toString());
-        System.out.println("00000010001100101000100000100000");
-
+        m.savingInstructions(m.s);
+    }
+    // this function splits the program string in an array of instructions
+    public void savingInstructions(String s) {
+        String[] splited = s.split("\n");
+        for (int i = 0; i < splited.length; i++) {
+            a = new Assembler(splited[i]);
+            a.setopcodeandfunctioncodeandinstructiontypeandregister();
+            instructions[i].machinecode = a.toString();
+        }
     }
 }
