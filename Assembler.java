@@ -39,10 +39,12 @@ public class Assembler {
     }
     public Assembler(String instruction) {
         this.instruction = instruction;
-        setopcodeandfunctioncodeandinstructiontypeandregisters();
-        }
+        setopcodeandfunctioncodeandinstructiontypeandregister();
     }
     @Override
+    // to string returns a string of the machine code of the instruction
+    // i only did the r-type , i will finish the rest later
+    // i will create another that allows you to access the machinecode as an array of integers
     public String toString() {
         String s = "";
         switch (this.instructionType) {
@@ -58,7 +60,7 @@ public class Assembler {
         }
         return s;
     }
-    private void setopcodeandfunctioncodeandinstructiontypeandregisters(){
+    public void setopcodeandfunctioncodeandinstructiontypeandregister(){
         String[] splited = instruction.split("\\s+");
         String[] splited2 = splited[1].split(",");
         RegistersFile f = new RegistersFile();
