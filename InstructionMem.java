@@ -5,4 +5,7 @@ public class InstructionMem {
     public InstructionMem(String s){
         machinecode = s;
     }
+    public String getMachinecode() {
+        return machinecode;
+    }
 }
