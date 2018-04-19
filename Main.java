@@ -264,13 +264,16 @@ public  class Main extends JFrame{
 
     public static String intToString(int number,int x) {
 
-        if (number == 0)
-
+     if (number == 0) {
             return zeroToString(x);
+        }
 
         String binaryString = Integer.toBinaryString(number);
-
-        binaryString = binaryString.substring(binaryString.length() - x);
+        if (binaryString.length() < x) {
+            binaryString = "00" + binaryString;
+        } else {
+            binaryString = binaryString.substring(binaryString.length() - x);
+        }
 
         return binaryString;
 
