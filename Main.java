@@ -262,17 +262,29 @@ public  class Main extends JFrame{
 
 
 
-    public static String intToString(int number,int x) {
+     public static String intToString(int number,int x) {
 
-     if (number == 0) {
+        if (number == 0) {
             return zeroToString(x);
         }
 
         String binaryString = Integer.toBinaryString(number);
-        if (binaryString.length() < x) {
-            binaryString = "00" + binaryString;
-        } else {
-            binaryString = binaryString.substring(binaryString.length() - x);
+        switch (binaryString.length()) {
+            case 1:
+                binaryString = "0000" + binaryString;
+                break;
+            case 2:
+                binaryString = "000" + binaryString;
+                break;
+            case 3:
+                binaryString = "00" + binaryString;
+                break;
+            case 4:
+                binaryString = "0" + binaryString;
+                break;
+            default:
+                binaryString = binaryString.substring(binaryString.length() - x);
+                break;
         }
 
         return binaryString;
