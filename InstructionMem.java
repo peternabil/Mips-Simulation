@@ -2,10 +2,6 @@ package cse116;
 
 public class InstructionMem {
     String machinecode;
-    public InstructionMem(String s){
-        machinecode = s;
-    }
-    public String getMachinecode() {
-        return machinecode;
-    }
+    Label[] labels = new Label[1000];
+    Instruction[] instructions = new Instruction[1000];
 }
