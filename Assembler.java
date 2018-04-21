@@ -477,11 +477,10 @@ public class Assembler {
 
     private void assemblej(Instruction in, int i) {
         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
-        String[] splited2 = splited[1].split(",");
         this.instructionMem.instructions[i].opcode = 2;
         this.instructionMem.instructions[i].instructionType = 'j';
         Instruction ikk = new Instruction();
-        ikk.instruction = splited2[2];
+        ikk.instruction = splited[1];
         instructionMem.instructions[i].label = new Label(ikk, new PC(i));
         this.setlabel(instructionMem.instructions[i].label.labelname.instruction, i);
         instructionMem.instructions[i].offset = ikk.pc.getPc();
@@ -501,15 +500,38 @@ public class Assembler {
 
     private void assemblejr(Instruction in, int i) {
         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
-        String[] splited2 = splited[1].split(",");
         RegistersFile f = new RegistersFile();
         this.instructionMem.instructions[i].opcode = 2;
         this.instructionMem.instructions[i].instructionType = 'j';
+
+        for (int j = 0; j < 32; j++) {
+            if (splited[1].equals(f.registers[j].name))
+                instructionMem.instructions[i].rs = j;
+        }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
+        StringBuilder s = new StringBuilder();
+        for (int j = instructionMem.instructions[i].opcodestr.length(); j <= 6; j++) s.append("0");
+        s.append(instructionMem.instructions[i].opcodestr);
+        instructionMem.instructions[i].opcodestr = s.toString();
+
+        instructionMem.instructions[i].rsstr = Integer.toBinaryString(instructionMem.instructions[i].rs);
+        StringBuilder s5 = new StringBuilder();
+        for (int j = instructionMem.instructions[i].rsstr.length(); j <= 26; j++) s5.append("0");
+        s5.append(instructionMem.instructions[i].rsstr);
+        instructionMem.instructions[i].rsstr = s5.toString();
+    }
+
+    private void assemblejal(Instruction in, int i){
+        String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
+        this.instructionMem.instructions[i].opcode = 3;
+        this.instructionMem.instructions[i].instructionType = 'j';
         Instruction ikk = new Instruction();
-        ikk.instruction = splited2[2];
+        ikk.instruction = splited[1];
         instructionMem.instructions[i].label = new Label(ikk, new PC(i));
         this.setlabel(instructionMem.instructions[i].label.labelname.instruction, i);
-        instructionMem.instructions[i].offset = f.registers[31].value;
+        instructionMem.instructions[i].offset = ikk.pc.getPc();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
         StringBuilder s = new StringBuilder();
@@ -627,47 +649,63 @@ public class Assembler {
                 switch (splited[0]) {
                     case "add":
                         assembleadd(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr+this.instructionMem.instructions[i].rsstr+this.instructionMem.instructions[i].rtstr+this.instructionMem.instructions[i].rdstr+this.instructionMem.instructions[i].shiftamountstr+this.instructionMem.instructions[i].functioncodestr;
                         break;
                     case "addi":
                         assembleaddi(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "lw":
                         assemblelw(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "sw":
                         assemblesw(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "lb":
                         assemblelb(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "lbu":
                         assemblelbu(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "sb":
                         assemblesb(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "sll":
                         assemblesll(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr+this.instructionMem.instructions[i].rsstr+this.instructionMem.instructions[i].rtstr+this.instructionMem.instructions[i].rdstr+this.instructionMem.instructions[i].shiftamountstr+this.instructionMem.instructions[i].functioncodestr;
                         break;
                     case "nor":
                         assemblenor(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr+this.instructionMem.instructions[i].rsstr+this.instructionMem.instructions[i].rtstr+this.instructionMem.instructions[i].rdstr+this.instructionMem.instructions[i].shiftamountstr+this.instructionMem.instructions[i].functioncodestr;
                         break;
                     case "beq":
                         assemblebeq(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                     case "j":
                         assemblej(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].immediate;
                         break;
                     case "jal":
-                        //assemblejal(in,i);
+                        assemblejal(in,i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].immediate;
                         break;
                     case "jr":
+                        assemblejr(in,i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].immediate;
                         break;
                     case "slt":
                         assembleslt(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr+this.instructionMem.instructions[i].rsstr+this.instructionMem.instructions[i].rtstr+this.instructionMem.instructions[i].rdstr+this.instructionMem.instructions[i].shiftamountstr+this.instructionMem.instructions[i].functioncodestr;
                         break;
                     case "slti":
                         assembleslti(in, i);
+                        this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].immediatestr;
                         break;
                 }
             }
