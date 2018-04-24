@@ -1,4 +1,4 @@
-package cse116;
+package MIPS;
 
 public class Instruction {
     public String instruction;

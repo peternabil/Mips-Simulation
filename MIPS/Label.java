@@ -1,4 +1,4 @@
-package cse116;
+package MIPS;
 
 public class Label {
     Instruction labelname = new Instruction();     // the name given by the user

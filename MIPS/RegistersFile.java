@@ -1,4 +1,4 @@
-package cse116;
+package MIPS;
 
 public class RegistersFile {
     public register[] registers;

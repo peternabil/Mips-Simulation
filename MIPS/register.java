@@ -1,4 +1,4 @@
-package cse116;
+package MIPS;
 
 public class register{
     public String name;

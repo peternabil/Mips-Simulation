@@ -1,4 +1,4 @@
-package cse116;
+package MIPS;
 
 public class PC {
     private int pc ; //this variable represents the program counter
