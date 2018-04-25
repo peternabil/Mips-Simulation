@@ -385,7 +385,7 @@ public class Assembler {
 
         instructionMem.instructions[i].shiftamountstr = Integer.toBinaryString(instructionMem.instructions[i].shiftamount);
         StringBuilder s6 = new StringBuilder();
-        for (int j = instructionMem.instructions[i].shiftamountstr.length(); j < 6; j++) s6.append("0");
+        for (int j = instructionMem.instructions[i].shiftamountstr.length(); j < 5; j++) s6.append("0");
         s6.append(instructionMem.instructions[i].shiftamountstr);
         instructionMem.instructions[i].shiftamountstr = s6.toString();
 
@@ -759,7 +759,8 @@ public class Assembler {
 
     public static void main(String[] args) {
         Assembler a = new Assembler();
-        a.program = "label:\naddi $s1,$s1,9\nadd $s2,$s1,$s2\nlw $s1,2($s2)\nsw $s1,2($s2)\nlb $s1,2($s2)\nsb $s1,2($s2)\nnor $s2,$s1,$s2\njal label";
+        a.program = "label:\naddi $s1,$s1,9\nadd $s2,$s1,$s2\nlw $s1,2($s2)\nsw $s1,2($s2)\nlb $s1,2($s2)\nsb $s1,2($s2)\nnor $s2,$s1,$s2\njal label\nsll $t1,$t2,2\nslti $v0,$a1,9\nbeq $v0,$t1,label";
+        System.out.println(a.program);
         a.assemble();
 //        System.out.println(a.instructionMem.instructions[0].instruction);
 //        System.out.println(a.instructionMem.instructions[0].machinecode);
