@@ -23,7 +23,9 @@ public class Instruction {
     public String rtstr;  //the part of the machine code sent to the register
     public String rdstr;  //the part of the machine code sent to the register
     public String machinecode;
-    public Instruction(){
+    public Instruction(int count){
+        this.pc = new PC(count);
+        this.label = new Label(null,pc);
     }
 
     public String setcontrolunitbinary(){
