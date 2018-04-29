@@ -12,6 +12,7 @@ public class Assembler {
     public void assemble() {
         String[] splited = this.program.split("\n");
         int iii = splited.length;
+        
         instructionMem = new InstructionMem(iii);
         String[] instructs = new String[iii];
         int ins = 0;
@@ -19,7 +20,7 @@ public class Assembler {
             if (splited[loo].endsWith(":")){
                 String[] n = splited[loo].split(":");
                 this.instructionMem.instructions[loo+1].label.labelname = n[0];
-                instructionMem.labels[loo] = new Label(n[0], new PC(loo));
+                instructionMem.labels[loo] = new Label(n[0], new PC(loo+1));
             }
             else {
                 instructs[ins] = splited[loo];
@@ -28,7 +29,7 @@ public class Assembler {
         }
         for (int i = 0; i < ins; i++) {
             instructionMem.instructions[i].instruction = instructs[i];
-            instructionMem.instructions[i].pc = new PC(i);
+            instructionMem.instructions[i].pc = new PC(i+1);
             this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
             System.out.println(instructionMem.instructions[i].instruction);
             System.out.println(instructionMem.instructions[i].machinecode);
@@ -169,7 +170,7 @@ public class Assembler {
         for (int j = 0; j < 32; j++) {
             if (s.equals(f.registers[j].name))
                 instructionMem.instructions[i].rs = j;
-            if (splited2[1].equals(f.registers[j].name))
+            if (splited2[0].equals(f.registers[j].name))
                 instructionMem.instructions[i].rd = j;
         }
         instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
@@ -208,7 +209,7 @@ public class Assembler {
         for (int j = 0; j < 32; j++) {
             if (s.equals(f.registers[j].name))
                 instructionMem.instructions[i].rs = j;
-            if (splited2[1].equals(f.registers[j].name))
+            if (splited2[0].equals(f.registers[j].name))
                 instructionMem.instructions[i].rt = j;
         }
         instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
@@ -707,7 +708,7 @@ public class Assembler {
                    break;
                case "lw":
                    assemblelw(in, i);
-                   this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].offsetstr;
+                   this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
                    break;
                case "sw":
                    assemblesw(in, i);
