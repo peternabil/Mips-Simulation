@@ -542,7 +542,7 @@ class Assembler {
 
 
 
-    private void assemblelw(Instruction in, int i) {
+   private void assemblelw(Instruction in, int i) {
 
         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
 
@@ -554,7 +554,7 @@ class Assembler {
 
         String s = splited3[2] + splited3[3] + splited3[4];
 
-        this.instructionMem.instructions[i].opcode = 43;
+        this.instructionMem.instructions[i].opcode = 35;
 
         this.instructionMem.instructions[i].instructionType = 'i';
 
@@ -564,7 +564,7 @@ class Assembler {
 
                 instructionMem.instructions[i].rs = j;
 
-            if (splited2[1].equals(f.registers[j].name))
+            if (splited2[0].equals(f.registers[j].name))
 
                 instructionMem.instructions[i].rd = j;
 
@@ -622,7 +622,7 @@ class Assembler {
 
     private void assemblesw(Instruction in, int i) {
 
-        String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
+          String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
 
         String[] splited2 = splited[1].split(",");
 
@@ -642,9 +642,9 @@ class Assembler {
 
                 instructionMem.instructions[i].rs = j;
 
-            if (splited2[1].equals(f.registers[j].name))
+            if (splited2[0].equals(f.registers[j].name))
 
-                instructionMem.instructions[i].rt = j;
+                instructionMem.instructions[i].rd = j;
 
         }
 
@@ -660,15 +660,15 @@ class Assembler {
 
 
 
-        instructionMem.instructions[i].rtstr = Integer.toBinaryString(instructionMem.instructions[i].rt);
+        instructionMem.instructions[i].rdstr = Integer.toBinaryString(instructionMem.instructions[i].rd);
 
         StringBuilder s2 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) s2.append("0");
+        for (int j = instructionMem.instructions[i].rdstr.length(); j < 5; j++) s2.append("0");
 
-        s2.append(instructionMem.instructions[i].rtstr);
+        s2.append(instructionMem.instructions[i].rdstr);
 
-        instructionMem.instructions[i].rtstr = s2.toString();
+        instructionMem.instructions[i].rdstr = s2.toString();
 
 
 
@@ -1636,11 +1636,11 @@ class Assembler {
 
                    break;
 
-               case "lw":
+              case "lw":
 
                    assemblelw(in, i);
 
-                   this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].offsetstr;
+                   this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
 
                    break;
 
@@ -1648,10 +1648,9 @@ class Assembler {
 
                    assemblesw(in, i);
 
-                   this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
+                   this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
 
                    break;
-
                case "lb":
 
                    assemblelb(in, i);
@@ -2078,6 +2077,9 @@ class ALU {
 
         }
 
+    }
+    public ALU(){
+        
     }
 
     public register getR1() {
