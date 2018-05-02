@@ -1,5 +1,10 @@
-package MIPS;
+package guim;
+
+import java.awt.*;
+import javax.swing.AbstractAction.*;
 import java.awt.event.*;
+import java.util.*;
+
 public class Gui extends javax.swing.JFrame {
     private Assembler a;
     private String s;
@@ -11,6 +16,9 @@ public class Gui extends javax.swing.JFrame {
     private register r1,r2,r3;
     private AluControl alucontrol; 
     private DataMem Mem=new DataMem();
+    private String offset;
+    private String offsetex;
+    
     public Gui() {
         initComponents();
         registers.addItem("$zer0");
@@ -57,11 +65,13 @@ public class Gui extends javax.swing.JFrame {
                 splited = s.split("\n");
                 eduGui n =new eduGui(s);
                 n.setVisible(true);
+              
                 next.addActionListener(new ActionListener(){
                     public void actionPerformed(ActionEvent e) {
                
                         if (counter < splited.length) {
                             machineCode.setText(a.instructionMem.instructions[counter].machinecode);
+                            offset=a.instructionMem.instructions[counter].machinecode.substring(15,31);
                             functioncode.setText(a.instructionMem.instructions[counter].functioncodestr);
                             opcode.setText(a.instructionMem.instructions[counter].opcodestr);
                             rs.setText(a.instructionMem.instructions[counter].rsstr);
@@ -73,22 +83,34 @@ public class Gui extends javax.swing.JFrame {
                             memread.setText(c.getmemRead() + "");
                             regwrite.setText(c.getRegWrite() + "");
                             memtoreg.setText("" + c.getmemroReg());
-                            memwrite.setText(c.getmemWrite() + "");
-                            
+                            memwrite.setText(c.getmemWrite() + ""); 
                             aluop.setText(c.getALUop());
                             alusrc.setText(c.getALUsrc() + "");
+                            
+                            offsettxt.setText(offset);
+                            offsettxt.setText(a.instructionMem.instructions[counter].immediatestr);
+                            if(a.instructionMem.instructions[counter].rtstr!=null)
+                                regdsttxt.setText(a.instructionMem.instructions[counter].rtstr);
+                            else
+                                regdsttxt.setText(a.instructionMem.instructions[counter].rdstr);
                             alucontrol =new AluControl(c.getALUop(),a.instructionMem.instructions[counter].functioncodestr);
                             r1 =f.getRegister(Integer.parseInt(a.instructionMem.instructions[counter].rsstr,2)); 
                             r2 =f.getRegister(Integer.parseInt(a.instructionMem.instructions[counter].rdstr,2));
+                            read1.setText(r1.getValue()+"");
+                            if(a.instructionMem.instructions[counter].instructionType=='r')
+                                read2.setText(r2.getValue()+"");
                            
-                            if(c.getRegDst()==1)
-                                f.setvalue(Integer.parseInt(a.instructionMem.instructions[counter].rdstr,2), 0);
-                            alu =new ALU(r1,r2 ,c.getALUsrc(),a.instructionMem.instructions[counter].immediate,alucontrol.getAluSignal());
+                            if(a.instructionMem.instructions[counter].instructionType=='i')
+                                alu =new ALU(r1,r2 ,c.getALUsrc(),a.instructionMem.instructions[counter].immediate,alucontrol.getAluSignal());
+                            else
+                                alu =new ALU(r1,r2 ,c.getALUsrc(),a.instructionMem.instructions[counter].offset,alucontrol.getAluSignal());
                             aluout.setText(alu.getResult()+"");
+                            if(c.getRegWrite()==1){
                             if(c.getRegDst()==1)
                                 f.setvalue(Integer.parseInt(a.instructionMem.instructions[counter].rtstr,2), alu.getResult());
                             else if(c.getRegDst()==0)
                                 f.setvalue(Integer.parseInt(a.instructionMem.instructions[counter].rdstr,2), alu.getResult());
+                            }
                             if(alu.getResult()==0)
                                 flag.setText("1");
                             else
@@ -99,7 +121,20 @@ public class Gui extends javax.swing.JFrame {
                                 and.setText("0");      
                             alucontoloutput.setText(alucontrol.getAluSignal());
                             
-                             read1.setText(r1.getValue()+"");
+                            if(offset.charAt(0)=='0'){
+                                offsetex="0000000000000000"+offset;
+                                signextend.setText(offsetex);
+                                
+                            }
+                            else{
+                                offsetex="1111111111111111"+offset;
+                                signextend.setText(offsetex);
+                            }
+                            if((offsetex).charAt(0)=='0')
+                                shift2.setText("00000000000000"+offset+"00");
+                            else
+                                shift2.setText("11111111111111"+offset+"00");
+                            
                              if(c.getmemRead()==1){
                                 int address=alu.getResult();
                                 r2.setValue(Mem.read(address));
@@ -132,6 +167,7 @@ public class Gui extends javax.swing.JFrame {
         reset.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 counter=0;
+                
             }
         });
 
@@ -150,11 +186,11 @@ public class Gui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         rs = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        offsettxt = new javax.swing.JTextField();
+        regdsttxt = new javax.swing.JTextField();
         rt = new javax.swing.JTextField();
         rd = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        signextend = new javax.swing.JTextField();
         RsField = new javax.swing.JLabel();
         RdField = new javax.swing.JLabel();
         RegDestinationMuxoutput = new javax.swing.JLabel();
@@ -188,7 +224,7 @@ public class Gui extends javax.swing.JFrame {
         and = new javax.swing.JTextField();
         aluout = new javax.swing.JTextField();
         read1 = new javax.swing.JTextField();
-        jTextField16 = new javax.swing.JTextField();
+        shift2 = new javax.swing.JTextField();
         memread = new javax.swing.JTextField();
         flag = new javax.swing.JTextField();
         regwrite = new javax.swing.JTextField();
@@ -223,7 +259,7 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        simulate.setText("simulate");
+        simulate.setText("Simulate");
         simulate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 simulateActionPerformed(evt);
@@ -241,17 +277,17 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        jTextField2.setText("0");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        offsettxt.setText("0");
+        offsettxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                offsettxtActionPerformed(evt);
             }
         });
 
-        jTextField3.setText("0");
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        regdsttxt.setText("0");
+        regdsttxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                regdsttxtActionPerformed(evt);
             }
         });
 
@@ -264,10 +300,10 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        jTextField6.setText("0");
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        signextend.setText("0");
+        signextend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                signextendActionPerformed(evt);
             }
         });
 
@@ -384,10 +420,10 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        jTextField16.setText("0");
-        jTextField16.addActionListener(new java.awt.event.ActionListener() {
+        shift2.setText("0");
+        shift2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField16ActionPerformed(evt);
+                shift2ActionPerformed(evt);
             }
         });
 
@@ -515,17 +551,17 @@ public class Gui extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(ANDGate)
-                                            .addComponent(OffsetField))
+                                            .addComponent(OffsetField)
+                                            .addComponent(Shift2))
                                         .addGap(39, 39, 39)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(and, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(signextend, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                                            .addComponent(offsettxt, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                                            .addComponent(shift2)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(RegDestinationMuxoutput)
                                         .addGap(27, 27, 27)
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(regdsttxt, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(62, 62, 62)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -539,8 +575,8 @@ public class Gui extends javax.swing.JFrame {
                             .addComponent(AluOutput)
                             .addComponent(ZeroFlag)
                             .addComponent(DataMemory)
-                            .addComponent(Shift2)
-                            .addComponent(MemtoRegMuxOutput)))
+                            .addComponent(MemtoRegMuxOutput)
+                            .addComponent(ANDGate)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -555,54 +591,58 @@ public class Gui extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(rt, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(rd, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(functioncode, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(read1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(read2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField24, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(aluout, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(flag, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(datamemout, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(reset, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(149, 149, 149)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(ALUSrc)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(alusrc, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(MemWrite)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(memwrite, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(RegDest1)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(MemtoReg)
-                                .addComponent(RegWrite)
-                                .addComponent(Branch)
-                                .addComponent(RegDest)
-                                .addComponent(ALUOp)
-                                .addComponent(MemRead))
-                            .addGap(92, 92, 92)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(memread, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
-                                .addComponent(regdst, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                                .addComponent(branch, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-                                .addComponent(regwrite, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
-                                .addComponent(memtoreg, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
-                                .addComponent(aluop, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ALUControlOutput)
-                        .addGap(55, 55, 55)
-                        .addComponent(alucontoloutput, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(functioncode, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(read1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(read2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField24, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(aluout, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(flag, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(datamemout, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(and, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(270, 270, 270)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(ALUSrc)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(alusrc, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(MemWrite)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(memwrite, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(RegDest1)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(MemtoReg)
+                                        .addComponent(RegWrite)
+                                        .addComponent(Branch)
+                                        .addComponent(RegDest)
+                                        .addComponent(ALUOp)
+                                        .addComponent(MemRead))
+                                    .addGap(92, 92, 92)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(memread, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
+                                        .addComponent(regdst, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                                        .addComponent(branch, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(regwrite, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
+                                        .addComponent(memtoreg, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
+                                        .addComponent(aluop, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(ALUControlOutput)
+                                .addGap(55, 55, 55)
+                                .addComponent(alucontoloutput, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(reset, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(793, Short.MAX_VALUE)
+                    .addContainerGap(919, Short.MAX_VALUE)
                     .addComponent(jLabel25)
                     .addGap(420, 420, 420)))
         );
@@ -623,7 +663,7 @@ public class Gui extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pc)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(FunctionCode)
                     .addComponent(functioncode, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(RegDest1))
@@ -652,7 +692,7 @@ public class Gui extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(regdst, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(RegDest))
-                        .addGap(18, 38, Short.MAX_VALUE)
+                        .addGap(18, 33, Short.MAX_VALUE)
                         .addComponent(branch, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -660,7 +700,7 @@ public class Gui extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(MemRead)
                             .addComponent(memread, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(regwrite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(RegWrite))
@@ -677,13 +717,7 @@ public class Gui extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(memwrite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(MemWrite))))
-                        .addGap(24, 24, 24)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Shift2)
-                            .addComponent(alusrc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ALUSrc))
-                        .addGap(33, 33, 33))
+                        .addGap(37, 37, 37))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -714,7 +748,7 @@ public class Gui extends javax.swing.JFrame {
                                 .addGap(30, 30, 30)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(RegDestinationMuxoutput)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(regdsttxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -730,21 +764,30 @@ public class Gui extends javax.swing.JFrame {
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(OffsetField)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(41, 41, 41)
+                            .addComponent(offsettxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(29, 29, 29)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(alusrc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ALUSrc)
+                            .addComponent(ANDGate)
+                            .addComponent(and, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(33, 33, 33))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(SignExtenderOutput)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(signextend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(21, 21, 21)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(13, 13, 13)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(ANDGate)
-                            .addComponent(and, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(MemtoRegMuxOutput)
-                            .addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(44, 44, 44))
+                            .addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Shift2)
+                            .addComponent(shift2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(42, 42, 42))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(ALUControlOutput)
@@ -752,7 +795,7 @@ public class Gui extends javax.swing.JFrame {
                         .addGap(31, 31, 31))))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(639, Short.MAX_VALUE)
+                    .addContainerGap(638, Short.MAX_VALUE)
                     .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(124, 124, 124)))
         );
@@ -770,21 +813,21 @@ public class Gui extends javax.swing.JFrame {
         // TODO add your handling code here:
     }                                     
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void regdsttxtActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
-    }                                           
+    }                                         
 
     private void rsActionPerformed(java.awt.event.ActionEvent evt) {                                   
         // TODO add your handling code here:
     }                                  
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void offsettxtActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
-    }                                           
+    }                                         
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void signextendActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:
-    }                                           
+    }                                          
 
     private void opcodeActionPerformed(java.awt.event.ActionEvent evt) {                                       
         // TODO add your handling code here:
@@ -822,9 +865,9 @@ public class Gui extends javax.swing.JFrame {
         // TODO add your handling code here:
     }                                     
 
-    private void jTextField16ActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void shift2ActionPerformed(java.awt.event.ActionEvent evt) {                                       
         // TODO add your handling code here:
-    }                                            
+    }                                      
 
     private void memreadActionPerformed(java.awt.event.ActionEvent evt) {                                        
         // TODO add your handling code here:
@@ -921,17 +964,14 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField12;
-    private javax.swing.JTextField jTextField16;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField23;
     private javax.swing.JTextField jTextField24;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField machineCode;
     private javax.swing.JTextField memread;
     private javax.swing.JTextField memtoreg;
     private javax.swing.JTextField memwrite;
     private javax.swing.JButton next;
+    private javax.swing.JTextField offsettxt;
     private javax.swing.JTextField opcode;
     private javax.swing.JLabel pc;
     public javax.swing.JTextArea program;
@@ -940,11 +980,15 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JTextField read2;
     private javax.swing.JTextField regValue;
     private javax.swing.JTextField regdst;
+    private javax.swing.JTextField regdsttxt;
     private javax.swing.JComboBox<String> registers;
     private javax.swing.JTextField regwrite;
     private javax.swing.JButton reset;
     private javax.swing.JTextField rs;
     private javax.swing.JTextField rt;
+    private javax.swing.JTextField shift2;
+    private javax.swing.JTextField signextend;
     public javax.swing.JButton simulate;
     // End of variables declaration                   
 }
+
