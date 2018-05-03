@@ -1,6 +1,6 @@
-
-package MIPS;
-
+//
+//package MIPS;
+//
 //
 //import javax.swing.*;
 //import java.awt.event.*;

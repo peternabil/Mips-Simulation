@@ -1,4 +1,4 @@
-package alu.main;
+package MIPS;
 
 public class AluControl {
     private String AluOP;

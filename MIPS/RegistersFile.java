@@ -9,7 +9,7 @@ public class RegistersFile {
         registers[1] = new register("$at");
         registers[2] = new register("$v0");
         registers[3] = new register("$v1");
-        registers[4] = new register("$$a0");
+        registers[4] = new register("$a0");
         registers[5] = new register("$a1");
         registers[6] = new register("$a2");
         registers[7] = new register("$a3");

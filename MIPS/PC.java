@@ -4,7 +4,7 @@ public class PC {
     private int pc ; //this variable represents the program counter
     private String pcbinary;
     public PC(int pc){ this.pc = pc;StringBuilder s = new StringBuilder();
-        pcbinary = Integer.toBinaryString(pc);
+        pcbinary = Integer.toBinaryString(pc*4);
         for (int h = pcbinary.length() ; h < 32 ; h++){s.append("0");}
         s.append(pcbinary);pcbinary=s.toString();
     } //the constructor to be used to intialize the pc at the beggining

@@ -6,6 +6,7 @@ public class ALU {
     private int ALUSrc;
     private int address;
     private String AluControlSignal;
+
     
     public ALU(register r1 , register r2 , int ALUSrc , int address) {
         this.r1 = r1;
@@ -13,7 +14,7 @@ public class ALU {
         this.ALUSrc = ALUSrc;
         this.address = address;
         int result = 0;
-        
+
         if (ALUSrc == 1){
             result = r1.value + this.address;
         }

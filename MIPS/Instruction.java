@@ -36,7 +36,7 @@ public class Instruction {
     }
 
     public String setregisterread1binary(){
-        return this.machinecode.substring(31-25, 31-21);
+        return this.machinecode.substring(31-25, 31-20);
     }
     public int setregisterread1ints(){
         return this.rs;
