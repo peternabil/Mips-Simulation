@@ -3,43 +3,53 @@ package MIPS;
 public class AluControl {
     private String AluOP;
     private String FunctCode;
+    String OpCode;
+    String AluControlSignal;
+    String JRsignal;
+
+    public AluControl(){
+        
+    }
 
     public AluControl(String AluOP, String FunctCode) {
         this.AluOP = AluOP;
         this.FunctCode = FunctCode;
-        String AluControlSignal;
-        String JRsignal;
-        
+                
         switch (this.AluOP){
-            case "00":
-                AluControlSignal = "010";
+            case "00": //i-type
+                if (this.OpCode == "001010") //slti
+                {
+                    AluControlSignal = "0111"; //slt
+                }
+                else
+                    AluControlSignal = "0010"; //add
                 break;
-            case "01":
-                AluControlSignal = "110";
+            case "01": //beq
+                AluControlSignal = "0110"; //sub
                 break;
-            case "10":
+            case "10": //Arithmetic and Logical operations(add,sub,and,or,slt)
                 switch (this.FunctCode){
-                    case "100000":
-                        AluControlSignal = "010";
+                    case "100000": //add
+                        AluControlSignal = "0010"; // add
                         JRsignal = "0";
                         break;
-                    case "100010":
-                        AluControlSignal = "110";
+                    case "100010": //sub
+                        AluControlSignal = "0110"; //sub
                         JRsignal = "0";
                         break;
-                    case "100100":
-                        AluControlSignal = "000";
+                    case "100100": //and
+                        AluControlSignal = "0000"; //and
                         JRsignal = "0";
                         break;
-                    case "100101":
-                        AluControlSignal = "001";
+                    case "100101": //or
+                        AluControlSignal = "0001"; //or
                         JRsignal = "0";
                         break;
-                    case "101010":
-                        AluControlSignal = "111";
+                    case "101010": //slt
+                        AluControlSignal = "0111"; //slt
                         JRsignal = "0";
                         break;
-                    case "000100": //jump register instruction
+                    case "001000": //jump register instruction
                         JRsignal = "1";
                         break;
                 }
@@ -48,7 +58,7 @@ public class AluControl {
     }
     
     public String getAluOP() {
-        return AluOP;
+        return this.AluOP;
     }
 
     public void setAluOP(String AluOP) {
@@ -56,7 +66,7 @@ public class AluControl {
     }
 
     public String getFunctCode() {
-        return FunctCode;
+        return this.FunctCode;
     }
 
     public void setFunctCode(String FunctCode) {
