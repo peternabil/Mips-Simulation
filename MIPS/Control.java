@@ -42,18 +42,18 @@ public class Control {
                 break; 
         }
     }
-    public int[] getRegDst(){
-        int[] n =new int []{controlArray[0],controlArray[1]};
+    public String getRegDst(){
+        String n =""+controlArray[0]+controlArray[1];
         return n; 
     }
     public int getBranch(){return controlArray[2]; }
     public int getmemRead(){return controlArray[3]; }
-    public int[] getmemroReg(){
-        int[] n =new int []{controlArray[4],controlArray[5]};
+    public String getmemroReg(){
+        String n =""+controlArray[4]+controlArray[5];
         return n; 
     }
-    public int[] getALUop(){
-        int[] n =new int []{controlArray[6],controlArray[7]}; 
+    public String getALUop(){
+        String n =""+controlArray[6]+controlArray[7]; 
         return n;
     }
     public int getmemWrite(){return controlArray[8]; }
