@@ -137,6 +137,10 @@ public class Gui extends javax.swing.JFrame {
                             }
                             else
                                 alusecond.setText(offset);    
+                            if(counter==0){
+                                r1=f.getRegister(0); 
+                                r2=f.getRegister(0); 
+                            }
                             alu =new ALU(r1.getValue(),r2.getValue() ,c.getALUsrc(),a.instructionMem.instructions[counter].offset,alucontrol.getAluSignal(),shamt);
                            
                             if (c.getJump() == 1) {
