@@ -534,6 +534,7 @@ public class Assembler {
             instructionMem.instructions[i].offsetstr = s4.toString();
             this.instructionMem.instructions[i].offsetstr=this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
             this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
+            instructionMem.instructions[i].offset*=-1;
         }
     }
 
