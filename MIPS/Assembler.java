@@ -663,7 +663,7 @@ public class Assembler {
         for (int j = 0; j < 32; j++) {
             if (s.equals(f.registers[j].name))
                 instructionMem.instructions[i].rd = j;
-            if (splited2[1].equals(f.registers[j].name))
+            if (splited2[0].equals(f.registers[j].name))
                 instructionMem.instructions[i].rs = j;
         }
         instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
@@ -719,7 +719,7 @@ public class Assembler {
         for (int j = 0; j < 32; j++) {
             if (s.equals(f.registers[j].name))
                 instructionMem.instructions[i].rd = j;
-            if (splited2[1].equals(f.registers[j].name))
+            if (splited2[0].equals(f.registers[j].name))
                 instructionMem.instructions[i].rs = j;
         }
         instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
@@ -778,7 +778,7 @@ public class Assembler {
                 instructionMem.instructions[i].rt = j;
                 key++;
             }
-            if (splited2[1].equals(f.registers[j].name)) {
+            if (splited2[0].equals(f.registers[j].name)) {
                 instructionMem.instructions[i].rs = j;
                 key++;
             }
