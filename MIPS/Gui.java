@@ -86,10 +86,7 @@ public class Gui extends javax.swing.JFrame {
              eduGui n =new eduGui(s);
                 n.setVisible(true);
               
-                next.addActionListener(new ActionListener(){
-                    public void actionPerformed(ActionEvent e) {
-               
-                        if (counter < splited.length) {
+               if (counter < splited.length) {
                             machineCode.setText(a.instructionMem.instructions[counter].machinecode);
                             offset=a.instructionMem.instructions[counter].machinecode.substring(16,32);
                             
@@ -137,7 +134,7 @@ public class Gui extends javax.swing.JFrame {
                             }
                             else
                                 alusecond.setText(offset);    
-                            if(counter==0){
+                            if(counter==0&&c.getJump()==1){
                                 r1=f.getRegister(0); 
                                 r2=f.getRegister(0); 
                             }
@@ -190,16 +187,48 @@ public class Gui extends javax.swing.JFrame {
                                 shift2.setText(shift2txt);
                             }
                             
-//                            branchaddress.setText(Integer.parseInt(shift2txt,2)+counter*4+"");
+                             branchaddress.setText(PC+(counter)*4+"");
                              if(c.getmemRead()==1){
                                 int address=alu.getResult();
-                                r2.setValue(Mem.read(address));
-                                datamemoryoutput=Mem.read(address);
+                                if(a.instructionMem.instructions[counter].opcodestr.equals("100000")){
+                                    if(address%4==0){ 
+                                     r2.setValue(Mem.getByte1(address));
+                                     datamemoryoutput=Mem.getByte1(address);
+                                    }
+                                    else if((address-1)%4==0){
+                                     r2.setValue(Mem.getByte2(address));
+                                     datamemoryoutput=Mem.getByte2(address); 
+                                    }
+                                    else if ((address - 2) % 4 == 0) {
+                                        r2.setValue(Mem.getByte3(address));
+                                        datamemoryoutput = Mem.getByte3(address);
+                                    }
+                                    else{
+                                        r2.setValue(Mem.getByte4(address));
+                                        datamemoryoutput = Mem.getByte4(address);
+                                    }
+                                }
+                                else{
+                                   r2.setValue(Mem.read(address));
+                                   datamemoryoutput=Mem.read(address); 
+                                }
+                                    
                                 datamemout.setText(datamemoryoutput+"");
                             }
                             if(c.getmemWrite()==1){
                                 int address=alu.getResult();
-                                Mem.write(r2.getValue(),address);
+                                if(a.instructionMem.instructions[counter].opcodestr.equals("101000")){
+                                    if(address%4==0)
+                                         Mem.setByte1(r2.getValue(),address);
+                                    else if((address-1)%4==0)
+                                        Mem.setByte2(r2.getValue(),address);
+                                    else if((address-2)%4==0)
+                                        Mem.setByte3(r2.getValue(),address);
+                                    else
+                                        Mem.setByte4(r2.getValue(),address);
+                                }
+                                else
+                                    Mem.write(r2.getValue(),address);
                             }
                             if(c.getmemroReg().equals("01"))
                                 memtoregout.setText(datamemoryoutput+"");
@@ -215,9 +244,9 @@ public class Gui extends javax.swing.JFrame {
                                     offsetd=-(a.instructionMem.instructions[counter].offset);
                                else
                                     offsetd=(a.instructionMem.instructions[counter].offset);
-                                    
+                                
                                 counter += offsetd;
-    
+                                
                             } 
                             else if(c.getJump() == 1){
                                 if(offset.charAt(0)=='1')
@@ -231,13 +260,13 @@ public class Gui extends javax.swing.JFrame {
                                 else if(a.instructionMem.instructions[counter].opcode==3){
                                     counter = (offsetd);
                                     
-                                }
-                                
+                                        }
+                                else if(alucontrol.getjrsignal().equals("1")){
+                                   counter = (r1.getValue());
+                                } 
                                 
                             }
-                            else if(alucontrol.getjrsignal().equals("1")){
-                                   counter = (r1.getValue());
-                                }
+                            
                             else
                             {
                                 counter++;
