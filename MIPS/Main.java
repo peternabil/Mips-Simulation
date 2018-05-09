@@ -939,13 +939,13 @@ class Assembler {
 
             this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
 
-            System.out.println(instructionMem.instructions[i].instruction);
+            /*System.out.println(instructionMem.instructions[i].instruction);
 
             System.out.println(instructionMem.instructions[i].machinecode);
 
             System.out.println(instructionMem.instructions[i].machinecode.length());
 
-            System.out.println(instructionMem.instructions[i].pc);
+            System.out.println(instructionMem.instructions[i].pc);*/
 
         }
 
@@ -1431,7 +1431,11 @@ class Assembler {
 
         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
 
+
+
         String[] splited2 = splited[1].split(",");
+
+
 
         String[] splited3 = splited2[1].split("");
 
@@ -1445,13 +1449,13 @@ class Assembler {
 
         for (int j = 0; j < 32; j++) {
 
-            if (s.equals(f.registers[j].name)) {
-                instructionMem.instructions[i].rt = j;
-            }
+            if (s.equals(f.registers[j].name))
 
-            if (splited2[1].equals(f.registers[j].name)) {
+                instructionMem.instructions[i].rt = j;
+
+            if (splited2[0].equals(f.registers[j].name))
+
                 instructionMem.instructions[i].rs = j;
-            }
 
         }
 
@@ -1459,85 +1463,91 @@ class Assembler {
 
         StringBuilder s1 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) {
-            s1.append("0");
-        }
+        for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) s1.append("0");
 
         s1.append(instructionMem.instructions[i].opcodestr);
 
         instructionMem.instructions[i].opcodestr = s1.toString();
 
+
+
         instructionMem.instructions[i].rtstr = Integer.toBinaryString(instructionMem.instructions[i].rt);
 
         StringBuilder s2 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) {
-            s2.append("0");
-        }
+        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) s2.append("0");
 
         s2.append(instructionMem.instructions[i].rtstr);
 
         instructionMem.instructions[i].rtstr = s2.toString();
 
+
+
         instructionMem.instructions[i].rsstr = Integer.toBinaryString(instructionMem.instructions[i].rs);
 
         StringBuilder s3 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) {
-            s3.append("0");
-        }
+        for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) s3.append("0");
 
         s3.append(instructionMem.instructions[i].rsstr);
 
         instructionMem.instructions[i].rsstr = s3.toString();
 
-        if (instructionMem.instructions[i].offset >= 0) {
+
+
+        if (instructionMem.instructions[i].offset>=0) {
 
             instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
 
             StringBuilder s4 = new StringBuilder();
 
-            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) {
-                s4.append("0");
-            }
+            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) s4.append("0");
 
             s4.append(instructionMem.instructions[i].offsetstr);
 
             instructionMem.instructions[i].offsetstr = s4.toString();
 
-            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
+            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
 
-        } else {
+        }
 
-            instructionMem.instructions[i].offset *= -1;
+        else{
+
+            instructionMem.instructions[i].offset*=-1;
 
             instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
 
             StringBuilder s4 = new StringBuilder();
 
-            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) {
-                s4.append("0");
-            }
+            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) s4.append("0");
 
             s4.append(instructionMem.instructions[i].offsetstr);
 
             instructionMem.instructions[i].offsetstr = s4.toString();
 
-            this.instructionMem.instructions[i].offsetstr = this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
+            this.instructionMem.instructions[i].offsetstr=this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
 
-            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
+            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
 
         }
 
         this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
 
+
+
     }
+
+
 
     private void assemblelbu(Instruction in, int i) {
 
         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
 
+
+
         String[] splited2 = splited[1].split(",");
+
+
 
         String[] splited3 = splited2[1].split("");
 
@@ -1551,13 +1561,13 @@ class Assembler {
 
         for (int j = 0; j < 32; j++) {
 
-            if (s.equals(f.registers[j].name)) {
-                instructionMem.instructions[i].rt = j;
-            }
+            if (s.equals(f.registers[j].name))
 
-            if (splited2[1].equals(f.registers[j].name)) {
+                instructionMem.instructions[i].rt = j;
+
+            if (splited2[0].equals(f.registers[j].name))
+
                 instructionMem.instructions[i].rs = j;
-            }
 
         }
 
@@ -1565,83 +1575,89 @@ class Assembler {
 
         StringBuilder s1 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) {
-            s1.append("0");
-        }
+        for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) s1.append("0");
 
         s1.append(instructionMem.instructions[i].opcodestr);
 
         instructionMem.instructions[i].opcodestr = s1.toString();
 
+
+
         instructionMem.instructions[i].rtstr = Integer.toBinaryString(instructionMem.instructions[i].rt);
 
         StringBuilder s2 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) {
-            s2.append("0");
-        }
+        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) s2.append("0");
 
         s2.append(instructionMem.instructions[i].rtstr);
 
-        instructionMem.instructions[i].rdstr = s2.toString();
+        instructionMem.instructions[i].rtstr = s2.toString();
+
+
 
         instructionMem.instructions[i].rsstr = Integer.toBinaryString(instructionMem.instructions[i].rs);
 
         StringBuilder s3 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) {
-            s3.append("0");
-        }
+        for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) s3.append("0");
 
         s3.append(instructionMem.instructions[i].rsstr);
 
         instructionMem.instructions[i].rsstr = s3.toString();
 
-        if (instructionMem.instructions[i].offset >= 0) {
+
+
+        if (instructionMem.instructions[i].offset>=0) {
 
             instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
 
             StringBuilder s4 = new StringBuilder();
 
-            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) {
-                s4.append("0");
-            }
+            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) s4.append("0");
 
             s4.append(instructionMem.instructions[i].offsetstr);
 
             instructionMem.instructions[i].offsetstr = s4.toString();
 
-            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
-
-        } else {
-
-            instructionMem.instructions[i].offset *= -1;
-
-            instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
-
-            StringBuilder s4 = new StringBuilder();
-
-            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) {
-                s4.append("0");
-            }
-
-            s4.append(instructionMem.instructions[i].offsetstr);
-
-            instructionMem.instructions[i].offsetstr = s4.toString();
-
-            this.instructionMem.instructions[i].offsetstr = this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
-
-            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
+            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
 
         }
 
+        else{
+
+            instructionMem.instructions[i].offset*=-1;
+
+            instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
+
+            StringBuilder s4 = new StringBuilder();
+
+            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) s4.append("0");
+
+            s4.append(instructionMem.instructions[i].offsetstr);
+
+            instructionMem.instructions[i].offsetstr = s4.toString();
+
+            this.instructionMem.instructions[i].offsetstr=this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
+
+            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
+
+        }
+
+
+
         this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
 
+
+
     }
+
+
 
     private void assemblesb(Instruction in, int i) {
 
         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
+
+
 
         String[] splited2 = splited[1].split(",");
 
@@ -1657,7 +1673,7 @@ class Assembler {
 
         int key = 0;
 
-        for (int j = 0; j < 32 && key != 2; j++) {
+        for (int j = 0; j < 32 &&key!=2; j++) {
 
             if (s.equals(f.registers[j].name)) {
 
@@ -1667,7 +1683,7 @@ class Assembler {
 
             }
 
-            if (splited2[1].equals(f.registers[j].name)) {
+            if (splited2[0].equals(f.registers[j].name)) {
 
                 instructionMem.instructions[i].rs = j;
 
@@ -1681,75 +1697,79 @@ class Assembler {
 
         StringBuilder s1 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) {
-            s1.append("0");
-        }
+        for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) s1.append("0");
 
         s1.append(instructionMem.instructions[i].opcodestr);
 
         instructionMem.instructions[i].opcodestr = s1.toString();
 
+
+
         instructionMem.instructions[i].rtstr = Integer.toBinaryString(instructionMem.instructions[i].rt);
 
         StringBuilder s2 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) {
-            s2.append("0");
-        }
+        for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) s2.append("0");
 
         s2.append(instructionMem.instructions[i].rtstr);
 
         instructionMem.instructions[i].rtstr = s2.toString();
 
+
+
         instructionMem.instructions[i].rsstr = Integer.toBinaryString(instructionMem.instructions[i].rs);
 
         StringBuilder s3 = new StringBuilder();
 
-        for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) {
-            s3.append("0");
-        }
+        for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) s3.append("0");
 
         s3.append(instructionMem.instructions[i].rsstr);
 
         instructionMem.instructions[i].rsstr = s3.toString();
 
-        if (instructionMem.instructions[i].offset >= 0) {
+
+
+
+
+        if (instructionMem.instructions[i].offset>=0) {
 
             instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
 
             StringBuilder s4 = new StringBuilder();
 
-            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) {
-                s4.append("0");
-            }
+            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) s4.append("0");
 
             s4.append(instructionMem.instructions[i].offsetstr);
 
             instructionMem.instructions[i].offsetstr = s4.toString();
 
-            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
-
-        } else {
-
-            instructionMem.instructions[i].offset *= -1;
-
-            instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
-
-            StringBuilder s4 = new StringBuilder();
-
-            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) {
-                s4.append("0");
-            }
-
-            s4.append(instructionMem.instructions[i].offsetstr);
-
-            instructionMem.instructions[i].offsetstr = s4.toString();
-
-            this.instructionMem.instructions[i].offsetstr = this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
-
-            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
+            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
 
         }
+
+        else{
+
+            instructionMem.instructions[i].offset*=-1;
+
+            instructionMem.instructions[i].offsetstr = Integer.toBinaryString(instructionMem.instructions[i].offset);
+
+            StringBuilder s4 = new StringBuilder();
+
+            for (int j = instructionMem.instructions[i].offsetstr.length(); j < 16; j++) s4.append("0");
+
+            s4.append(instructionMem.instructions[i].offsetstr);
+
+            instructionMem.instructions[i].offsetstr = s4.toString();
+
+            this.instructionMem.instructions[i].offsetstr=this.twosCompliment(this.instructionMem.instructions[i].offsetstr);
+
+            this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].offsetstr;
+
+        }
+
+
+
+
 
         this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].offsetstr;
 
@@ -2841,7 +2861,7 @@ class RegistersFile {
 
         registers[28] = new register("$gp", 0);
 
-        registers[29] = new register("$sp", 0);
+        registers[29] = new register("$sp", 10000);
 
         registers[30] = new register("$fp", 0);
 
@@ -3004,7 +3024,7 @@ class Control {
             case 10: //slti
 
                 controlArray = new int[]{0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1};
-                aluop = "10";
+                aluop = "00";
                 regdst = "00";
                 memtoreg = "00";
                 break;
@@ -3082,13 +3102,15 @@ class ALU {
         this.AluControlSignal = aluc;
         this.shamt = shamt;
 
-        if (ALUSrc == 1) {
+        if (ALUSrc == 1) 
+        {
             if (AluControlSignal.equals("0010")) //lw , sw , addi
             {
 
                 result = r1 + this.offset;
 
-            } else if (AluControlSignal.equals("0111")) //slti
+            } 
+            else if (AluControlSignal.equals("0111")) //slti
             {
 
                 if (r1 < this.offset) {
@@ -3096,7 +3118,8 @@ class ALU {
                 }
 
             }
-        } else if (ALUSrc == 0) {
+        } 
+        else if (ALUSrc == 0) {
 
             switch (AluControlSignal.trim()) {
 
@@ -3229,7 +3252,8 @@ class AluControl {
 
                     AluControlSignal = "0111"; //slt
 
-                } else {
+                } 
+                else {
                     AluControlSignal = "0010"; //add
                 }
                 break;
@@ -3338,578 +3362,390 @@ class AluControl {
 }
 
 class Memory {
-
-
-
-    /** Value stored inside the memory object**/
-
-    private int value;  
-
-
-
-    /** Most significant byte**/
-
-    private int b1; 
-
-    /**Second byte from the left**/
-
+    /**
+     * Value stored inside the memory object*
+     */
+    private int value;
+    /**
+     * Most significant byte*
+     */
+    private int b1;
+    /**
+     * Second byte from the left*
+     */
     private int b2;
-
-    /**Second byte from the right**/
-
+    /**
+     * Second byte from the right*
+     */
     private int b3;
-
-
-
-    /** Least significant byte**/
-
-    private int b4; 
-
-
-
-    /** Initialize a memory object with a value**/
-
+    /**
+     * Least significant byte*
+     */
+    private int b4;
+    /**
+     * Initialize a memory object with a value*
+     */
     public Memory(int value) {
-
-
-
         this.value = value;
-
-
-
     }
-
-/** Returns the value stored inside a memory object**/
-
+    /**
+     * Returns the value stored inside a memory object*
+     */
     public int read() {
-
-
-
         return value;
-
-
-
     }
-
-/** Overwrites the value of a memory object**/
-
+    /**
+     * Overwrites the value of a memory object*
+     */
     public void write(int value) {
-
-
-
-        this.value = value;  
-
-
-
+        this.value = value;
     }
-
-/** Returns a string representing the value inside the memory word in binary**/
-
+    /**
+     * Returns a string representing the value inside the memory word in binary*
+     */
     public String getValueasBinaryString() {
-
-
-
         StringBuffer sb;
-
-
-
         if (value >= 0) {
-
-
-
             String s = Integer.toBinaryString(value);
-
-
-
             sb = new StringBuffer(s);
-
-
-
 //            for (int i = 0; i < s.length(); i++) {
-
 //
-
 //                sb.setCharAt(i, s.charAt(i));
-
 //            }
-
             sb = sb.reverse();
-
-
-
             for (int i = s.length(); i < 32; i++) {
-
-
-
                 sb.append("0");
-
-
-
             }
-
             sb = sb.reverse();
-
             String newValue = sb.toString();
-
-
-
             return newValue;
-
         } else {
-
-
-
             int temp = -value;
-
-
-
             String s = Integer.toBinaryString(temp);
-
-
-
             sb = new StringBuffer(s);
-
-
-
             sb = sb.reverse();
-
-
-
             int i;
-
-
-
             for (i = 0; i < s.length(); i++) {
-
-
-
                 if (sb.charAt(i) == '1') {
-
-
-
                     sb.setCharAt(i, sb.charAt(i));
-
-
-
                     break;
-
-
-
                 }
-
-
-
                 sb.setCharAt(i, sb.charAt(i));
-
-
-
             }
-
             for (i = i + 1; i < s.length(); i++) {
-
-
-
                 if (sb.charAt(i) == '1') {
-
-
-
                     sb.setCharAt(i, '0');
-
-
-
                 } else {
-
-
-
                     sb.setCharAt(i, '1');
-
-
-
                 }
-
-
-
             }
-
-
-
             for (i = sb.length(); i < 32; i++) {
 
-
-
                 sb.append("1");
-
             }
-
             sb = sb.reverse();
-
             return sb.toString();
-
         }
-
     }
-
-/**Set the most significant byte to a certain value**/
-
-    public void setbyte1(byte b) {
-
-
-
+    /**
+     * Set the most significant byte to a certain value*
+     */
+    public void setbyte1(int b) {
         b1 = b;
-
-
-
     }
-
-/**Set the second most significant byte to a certain value**/
-
-    public void setbyte2(byte b) {
-
-
-
+    /**
+     * Set the second most significant byte to a certain value*
+     */
+    public void setbyte2(int b) {
         b2 = b;
-
-
-
     }
-
-/**Set the second least significant byte to a certain value**/
-
-    public void setbyte3(byte b) {
-
-
-
+    /**
+     * Set the second least significant byte to a certain value*
+     */
+    public void setbyte3(int b) {
         b3 = b;
-
-
-
     }
-
-/**Set the least significant byte to a certain value**/
-
-    public void setbyte4(byte b) {
-
-
-
+    /**
+     * Set the least significant byte to a certain value*
+     */
+    public void setbyte4(int b) {
         b4 = b;
-
-
-
     }
-
-/**Returns the most significant byte**/
-
+    /**
+     * Returns the most significant byte*
+     */
     public int getB1() {
-
         return b1;
-
     }
-
-/**Returns the second most significant byte**/
-
+    /**
+     * Returns the second most significant byte*
+     */
     public int getB2() {
-
         return b2;
-
     }
-
-/**Returns the second least significant byte**/
-
+    /**
+     * Returns the second least significant byte*
+     */
     public int getB3() {
-
         return b3;
-
     }
-
-/**Returns the least significant byte**/
-
+    /**
+     * Returns the least significant byte*
+     */
     public int getB4() {
-
         return b4;
-
     }
-
-/**Returns the most significant byte as a string**/
-
+    /**
+     * Returns the most significant byte as a string*
+     */
     public String getB1String() {
-
         return Integer.toString(b1);
-
     }
-
-/**Returns the second most significant byte as a string**/
-
+    /**
+     * Returns the second most significant byte as a string*
+     */
     public String getB2String() {
-
         return Integer.toString(b2);
-
     }
-
-/**Returns the second least significant byte as a string**/
-
+    /**
+     * Returns the second least significant byte as a string*
+     */
     public String getB3String() {
-
         return Integer.toString(b3);
-
     }
-
-/**Returns the least significant byte as a string**/
-
+    /**
+     * Returns the least significant byte as a string*
+     */
     public String getB4String() {
-
         return Integer.toString(b4);
-
     }
-
-/**Update the value inside the memory word when a byte is changed using sb instruction**/
-
+    /**
+     * Update the value inside the memory word when a byte is changed using sb instruction*
+     */
     public void updateValue() {
-
-
-
-        String s1 = Integer.toString(b1);
-
-
-
-        String s2 = Integer.toString(b2);
-
-
-
-        String s3 = Integer.toString(b3);
-
-
-
-        String s4 = Integer.toString(b4);
-
-
-
-        String s5 = s1 + s2 + s3 + s4;
-
-
-
-        value = Integer.parseInt(s5);
-
-
-
-    }
-
-/**Update the bytes inside the memory word when the value is overwritten using sw instruction
-
- or using write() method**/
-
-    public void updateValueBytes() {
-
-
-
-        if (value >= 0) {
-
-            String s = Integer.toBinaryString(value);
-
-
-
+        String byte1, byte2, byte3, byte4;
+          if (b1 >= 0) {
+            String s = Integer.toBinaryString(b1);
             StringBuffer sb = new StringBuffer(s);
-
-
-
 //            for (int i = 0; i < s.length(); i++) {
-
 //
-
 //                sb.setCharAt(i, s.charAt(i));
-
 //            }
-
-            for (int i = s.length(); i < 32; i++) {
-
-
-
+            for (int i = s.length(); i < 8; i++) {
                 sb.append("0");
-
-
-
             }
-
-
-
             sb = sb.reverse();
-
-
-
-            String newValue = sb.toString();
-
-
-
-            String s1 = newValue.substring(0, 7);
-
-
-
-            String s2 = newValue.substring(8, 15);
-
-
-
-            String s3 = newValue.substring(16, 23);
-
-
-
-            String s4 = newValue.substring(24, 31);
-
-
-
-            b1 = Integer.parseInt(s1);
-
-
-
-            b2 = Integer.parseInt(s2);
-
-
-
-            b3 = Integer.parseInt(s3);
-
-
-
-            b4 = Integer.parseInt(s4);
-
-
-
+            byte1 = sb.toString();
         } else {
-
-
-
-            int temp = -value;
-
-
-
+            int temp = -b1;
             String s = Integer.toBinaryString(temp);
-
-
-
             StringBuffer sb = new StringBuffer(s);
-
-
-
             sb = sb.reverse();
-
-
-
             int i;
-
-
-
             for (i = 0; i < s.length(); i++) {
-
-
-
                 if (sb.charAt(i) == '1') {
-
-
-
                     sb.setCharAt(i, sb.charAt(i));
-
-
-
                     break;
-
-
-
                 }
-
-
-
                 sb.setCharAt(i, sb.charAt(i));
-
-
-
             }
-
             for (i = i + 1; i < s.length(); i++) {
-
-
-
                 if (sb.charAt(i) == '1') {
-
-
-
                     sb.setCharAt(i, '0');
-
-
-
                 } else {
-
-
-
                     sb.setCharAt(i, '1');
-
-
-
                 }
-
-
-
             }
-
-
-
-            for (i = sb.length(); i < 32; i++) {
-
-
-
+            for (i = sb.length(); i < 8; i++) {
                 sb.append("1");
-
             }
-
-
-
             sb = sb.reverse();
-
-
-
-            String newValue = sb.toString();
-
-
-
-            String s1 = newValue.substring(0, 8);
-
-
-
-            String s2 = newValue.substring(8, 16);
-
-
-
-            String s3 = newValue.substring(16, 24);
-
-
-
-            String s4 = newValue.substring(24, 32);
-
-
-
-            b1 = Integer.parseInt(s1);
-
-
-
-            b2 = Integer.parseInt(s2);
-
-
-
-            b3 = Integer.parseInt(s3);
-
-
-
-            b4 = Integer.parseInt(s4);
-
+            byte1 = sb.toString();
         }
-
+        if (b2 >= 0) {
+            String s = Integer.toBinaryString(b2);
+            StringBuffer sb = new StringBuffer(s);
+//            for (int i = 0; i < s.length(); i++) {
+//
+//                sb.setCharAt(i, s.charAt(i));
+//            }
+            for (int i = s.length(); i < 8; i++) {
+                sb.append("0");
+            }
+            sb = sb.reverse();
+            byte2 = sb.toString();
+        } else {
+            int temp = -b2;
+            String s = Integer.toBinaryString(temp);
+            StringBuffer sb = new StringBuffer(s);
+            sb = sb.reverse();
+            int i;
+            for (i = 0; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, sb.charAt(i));
+                    break;
+                }
+                sb.setCharAt(i, sb.charAt(i));
+            }
+            for (i = i + 1; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, '0');
+                } else {
+                    sb.setCharAt(i, '1');
+                }
+            }
+            for (i = sb.length(); i < 8; i++) {
+                sb.append("1");
+            }
+            sb = sb.reverse();
+            byte2 = sb.toString();
+        }
+        if (b3 >= 0) {
+            String s = Integer.toBinaryString(b3);
+            StringBuffer sb = new StringBuffer(s);
+//            for (int i = 0; i < s.length(); i++) {
+//
+//                sb.setCharAt(i, s.charAt(i));
+//            }
+            for (int i = s.length(); i < 8; i++) {
+                sb.append("0");
+            }
+            sb = sb.reverse();
+            byte3 = sb.toString();
+        } else {
+            int temp = -b3;
+            String s = Integer.toBinaryString(temp);
+            StringBuffer sb = new StringBuffer(s);
+            sb = sb.reverse();
+            int i;
+            for (i = 0; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, sb.charAt(i));
+                    break;
+                }
+                sb.setCharAt(i, sb.charAt(i));
+            }
+            for (i = i + 1; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, '0');
+                } else {
+                    sb.setCharAt(i, '1');
+                }
+            }
+            for (i = sb.length(); i < 8; i++) {
+                sb.append("1");
+            }
+            sb = sb.reverse();
+            byte3 = sb.toString();
+        }
+        if (b4 >= 0) {
+            String s = Integer.toBinaryString(b4);
+            StringBuffer sb = new StringBuffer(s);
+//            for (int i = 0; i < s.length(); i++) {
+//
+//                sb.setCharAt(i, s.charAt(i));
+//            }
+            for (int i = s.length(); i < 8; i++) {
+                sb.append("0");
+            }
+            sb = sb.reverse();
+            byte4 = sb.toString();
+        } else {
+            int temp = -b4;
+            String s = Integer.toBinaryString(temp);
+            StringBuffer sb = new StringBuffer(s);
+            sb = sb.reverse();
+            int i;
+            for (i = 0; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, sb.charAt(i));
+                    break;
+                }
+                sb.setCharAt(i, sb.charAt(i));
+            }
+            for (i = i + 1; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, '0');
+                } else {
+                    sb.setCharAt(i, '1');
+                }
+            }
+            for (i = sb.length(); i < 8; i++) {
+                sb.append("1");
+            }
+            sb = sb.reverse();
+            byte4 = sb.toString();
+        }
+        String s = byte1 + byte2 + byte3 + byte4;
+        value = Integer.parseInt(s,2);
     }
-
-
-
+    /**
+     * Update the bytes inside the memory word when the value is overwritten
+     * using sw instruction or using write() method*
+     */
+    public void updateValueBytes() {
+        if (value >= 0) {
+            String s = Integer.toBinaryString(value);
+            StringBuffer sb = new StringBuffer(s);
+//            for (int i = 0; i < s.length(); i++) {
+//
+//                sb.setCharAt(i, s.charAt(i));
+//            }
+            for (int i = s.length(); i < 32; i++) {
+                sb.append("0");
+            }
+            sb = sb.reverse();
+            String newValue = sb.toString();
+            String s1 = newValue.substring(0, 7);
+            String s2 = newValue.substring(8, 15);
+            String s3 = newValue.substring(16, 23);
+            String s4 = newValue.substring(24, 31);
+            b1 = Integer.parseInt(s1);
+            b2 = Integer.parseInt(s2);
+            b3 = Integer.parseInt(s3);
+            b4 = Integer.parseInt(s4);
+        } else {
+            int temp = -value;
+            String s = Integer.toBinaryString(temp);
+            StringBuffer sb = new StringBuffer(s);
+            sb = sb.reverse();
+            int i;
+            for (i = 0; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, sb.charAt(i));
+                    break;
+                }
+                sb.setCharAt(i, sb.charAt(i));
+            }
+            for (i = i + 1; i < s.length(); i++) {
+                if (sb.charAt(i) == '1') {
+                    sb.setCharAt(i, '0');
+                } else {
+                    sb.setCharAt(i, '1');
+                }
+            }
+            for (i = sb.length(); i < 32; i++) {
+                sb.append("1");
+            }
+            sb = sb.reverse();
+            String newValue = sb.toString();
+            String s1 = newValue.substring(0, 8);
+            String s2 = newValue.substring(8, 16);
+            String s3 = newValue.substring(16, 24);
+            String s4 = newValue.substring(24, 32);
+            b1 = Integer.parseInt(s1);
+            b2 = Integer.parseInt(s2);
+            b3 = Integer.parseInt(s3);
+            b4 = Integer.parseInt(s4);
+        }
+    }
 }
 class DataMem {
 
     Memory[] dataMemory = new Memory[10000];
 
     public DataMem() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             dataMemory[i] = new Memory(0);
         }
     }
@@ -3922,5 +3758,41 @@ class DataMem {
         dataMemory[address].write(value);
         dataMemory[address].updateValueBytes();
     }
-}
+    public void setByte1(int value,int address){
+        dataMemory[address].setbyte1(value);
+        
+    }
+     public void setByte2(int value,int address){
+        dataMemory[address].setbyte2((byte)value);
+        dataMemory[address].updateValue();
+    }
+      public void setByte3(int value,int address){
+        dataMemory[address].setbyte3((byte)value);
+        dataMemory[address].updateValue();
+    }
+    public void setByte4(int value, int address) {
+        dataMemory[address].setbyte4((byte) value);
+        dataMemory[address].updateValue();
+    }
 
+    public int getByte1( int address) {
+        return dataMemory[address].getB1();
+
+    }
+
+    public int getByte2( int address) {
+        return dataMemory[address].getB2();
+
+    }
+
+    public int getByte3( int address) {
+        return dataMemory[address].getB3();
+
+    }
+
+    public int getByte4( int address) {
+        return dataMemory[address].getB4();
+         
+    }
+    
+}
