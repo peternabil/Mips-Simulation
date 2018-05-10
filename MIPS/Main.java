@@ -939,7 +939,7 @@ class Assembler {
            
                 this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
             }catch (Exception e){
-            JOptionPane.showMessageDialog(null,"There seems to be a problem\nPlease check if you:\nJumping or Branching to a nonexisting label\nEntered a non Existing Instruction or Register\nNOTE : The program doesn't accept any instruction not preceded by a space\nor any register in the form of it's number");
+            JOptionPane.showMessageDialog(null,"There seems to be a problem\nPlease check if you:\nJumping or Branching to a nonexisting label\nEntered a non Existing Instruction or Register\nNOTE : The program doesn't accept any instruction not preceded by a space\nor any register in the form of its number");
             }
 
             /*System.out.println(instructionMem.instructions[i].instruction);
