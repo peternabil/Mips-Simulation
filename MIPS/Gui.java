@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.AbstractAction.*;
 import java.awt.event.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 public class Gui extends javax.swing.JFrame {
     private Assembler a;
@@ -67,6 +68,7 @@ public class Gui extends javax.swing.JFrame {
         registers.addItem("$ra");
         registers.setSelectedItem(null);
         this.setTitle("Mips simulation");
+        this.setResizable(false);
     ok.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e) {
             value=Integer.parseInt(val.getText());
@@ -79,17 +81,25 @@ public class Gui extends javax.swing.JFrame {
   simulate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 s = program.getText();
+                try{
                 a = new Assembler(); 
                 a.assemble(s);
+                }
+                catch(Exception ex){
+                    JOptionPane.showMessageDialog(null,"There seems to be a problem\nPlease check if you:\nJumping or Branching to a nonexisting label\nEntered a non Existing Instruction or Register\nNOTE : The program doesn't accept any instruction not preceded by a space\nor any register in the form of its number");
+                }
                 splited = s.split("\n");
                 PC=Integer.parseInt(Pc.getText());
-             eduGui n =new eduGui(s);
+                eduGui n =new eduGui(s,PC);
                 n.setVisible(true);
               
-               if (counter < splited.length) {
+                next.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e) {
+                        try{
+                        if (counter < splited.length) {
                             machineCode.setText(a.instructionMem.instructions[counter].machinecode);
                             offset=a.instructionMem.instructions[counter].machinecode.substring(16,32);
-                            
+                            offsettxt.setText(offset);
                             offsetd=Integer.parseInt(offset,2);
                             if(a.instructionMem.instructions[counter].instructionType=='r')
                                 shamt=a.instructionMem.instructions[counter].shiftamount;
@@ -108,8 +118,8 @@ public class Gui extends javax.swing.JFrame {
                             aluop.setText(c.getALUop());
                             alusrc.setText(c.getALUsrc() + "");
                             jtext.setText(c.getJump()+"");
-                            offsettxt.setText(offset);
-                            offsettxt.setText(a.instructionMem.instructions[counter].offsetstr);
+                            
+                           
                             if(a.instructionMem.instructions[counter].rdstr!=null)
                                 regdsttxt.setText(a.instructionMem.instructions[counter].rdstr);
                             else
@@ -235,7 +245,7 @@ public class Gui extends javax.swing.JFrame {
                             else if(c.getmemroReg().equals("00"))
                                  memtoregout.setText(alu.getResult()+"");
                             else{
-                                memtoregout.setText((PC+counter*4)+"");
+                                memtoregout.setText((PC+(counter+1)*4)+"");
                             }
                                 
                             Pc.setText((PC+counter*4)+"");
@@ -288,11 +298,15 @@ public class Gui extends javax.swing.JFrame {
                             });
 
                         }
+                        }catch(Exception exc){
+                    JOptionPane.showMessageDialog(null,"There seems to be a problem\nPlease check if you:\nJumping or Branching to a nonexisting label\nEntered a non Existing Instruction or Register\nNOTE : The program doesn't accept any instruction not preceded by a space\nor any register in the form of its number");
+                        }
+                
                         
                     }
                     
                 });
-                
+              
             }
   
   });
