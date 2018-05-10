@@ -932,12 +932,15 @@ class Assembler {
         }
 
         for (int i = 0; i < ins; i++) {
+            try{
+                instructionMem.instructions[i].instruction = instructs[i];
 
-            instructionMem.instructions[i].instruction = instructs[i];
-
-            instructionMem.instructions[i].pc = new PC(i);
-
-            this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
+                instructionMem.instructions[i].pc = new PC(i);
+           
+                this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
+            }catch (Exception e){
+            JOptionPane.showMessageDialog(null,"There seems to be a problem\nPlease check if:\nJumping or Branching to a nonexisting label\nEntered a non Existing Instruction or Register\nNOTE : The program doesn't accept any instruction not preceded by a space\nor any register in the form of it's number");
+            }
 
             /*System.out.println(instructionMem.instructions[i].instruction);
 
