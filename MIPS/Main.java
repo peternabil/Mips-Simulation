@@ -932,15 +932,12 @@ class Assembler {
         }
 
         for (int i = 0; i < ins; i++) {
-            try{
-                instructionMem.instructions[i].instruction = instructs[i];
 
-                instructionMem.instructions[i].pc = new PC(i);
-           
-                this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
-            }catch (Exception e){
-            JOptionPane.showMessageDialog(null,"There seems to be a problem\nPlease check if you:\nJumping or Branching to a nonexisting label\nEntered a non Existing Instruction or Register\nNOTE : The program doesn't accept any instruction not preceded by a space\nor any register in the form of its number");
-            }
+            instructionMem.instructions[i].instruction = instructs[i];
+
+            instructionMem.instructions[i].pc = new PC(i);
+
+            this.setopcodeandfunctioncodeandinstructiontypeandregister(instructionMem.instructions[i], i);
 
             /*System.out.println(instructionMem.instructions[i].instruction);
 
@@ -1454,11 +1451,11 @@ class Assembler {
 
             if (s.equals(f.registers[j].name))
 
-                instructionMem.instructions[i].rt = j;
+                instructionMem.instructions[i].rs = j;
 
             if (splited2[0].equals(f.registers[j].name))
 
-                instructionMem.instructions[i].rs = j;
+                instructionMem.instructions[i].rt = j;
 
         }
 
@@ -1566,11 +1563,11 @@ class Assembler {
 
             if (s.equals(f.registers[j].name))
 
-                instructionMem.instructions[i].rt = j;
+                instructionMem.instructions[i].rs = j;
 
             if (splited2[0].equals(f.registers[j].name))
 
-                instructionMem.instructions[i].rs = j;
+                instructionMem.instructions[i].rt = j;
 
         }
 
@@ -1680,7 +1677,7 @@ class Assembler {
 
             if (s.equals(f.registers[j].name)) {
 
-                instructionMem.instructions[i].rt = j;
+                instructionMem.instructions[i].rs = j;
 
                 key++;
 
@@ -1688,7 +1685,7 @@ class Assembler {
 
             if (splited2[0].equals(f.registers[j].name)) {
 
-                instructionMem.instructions[i].rs = j;
+                instructionMem.instructions[i].rt = j;
 
                 key++;
 
@@ -1780,107 +1777,209 @@ class Assembler {
 
     private void assemblesll(Instruction in, int i) {
 
-        String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
+         String[] splited = instructionMem.instructions[i].instruction.split("\\s+");
+
+
 
         String[] splited2 = splited[1].split(",");
 
+
+
         this.instructionMem.instructions[i].opcode = 0;
+
+
 
         this.instructionMem.instructions[i].functioncode = 0;
 
+
+
         this.instructionMem.instructions[i].instructionType = 'r';
+
+
 
         this.instructionMem.instructions[i].rt = 0;
 
+
+
         this.instructionMem.instructions[i].shiftamount = Integer.parseInt(splited2[2]);
+
+
 
         for (int j = 0; j < 32; j++) {
 
+
+
             if (splited2[0].equals(f.registers[j].name)) {
+
                 instructionMem.instructions[i].rd = j;
+
             }
+
+
 
             if (splited2[1].equals(f.registers[j].name)) {
+
                 instructionMem.instructions[i].rt = j;
+
             }
 
+
+
         }
+
+
 
         instructionMem.instructions[i].opcodestr = Integer.toBinaryString(instructionMem.instructions[i].opcode);
 
+
+
         StringBuilder s = new StringBuilder();
 
+
+
         for (int j = instructionMem.instructions[i].opcodestr.length(); j < 6; j++) {
+
             s.append("0");
+
         }
+
+
 
         s.append(instructionMem.instructions[i].opcodestr);
 
+
+
         instructionMem.instructions[i].opcodestr = s.toString();
+
+
 
         instructionMem.instructions[i].rsstr = Integer.toBinaryString(instructionMem.instructions[i].rs);
 
+
+
         StringBuilder s2 = new StringBuilder();
 
+
+
         for (int j = instructionMem.instructions[i].rsstr.length(); j < 5; j++) {
+
             s2.append("0");
+
         }
+
+
 
         s2.append(instructionMem.instructions[i].rsstr);
 
+
+
         instructionMem.instructions[i].rsstr = s2.toString();
+
+
 
         instructionMem.instructions[i].rdstr = Integer.toBinaryString(instructionMem.instructions[i].rd);
 
+
+
         StringBuilder s3 = new StringBuilder();
 
+
+
         for (int j = instructionMem.instructions[i].rdstr.length(); j < 5; j++) {
+
             s3.append("0");
+
         }
+
+
 
         s3.append(instructionMem.instructions[i].rdstr);
 
+
+
         instructionMem.instructions[i].rdstr = s3.toString();
+
+
 
         instructionMem.instructions[i].rtstr = Integer.toBinaryString(instructionMem.instructions[i].rt);
 
+
+
         StringBuilder s4 = new StringBuilder();
 
+
+
         for (int j = instructionMem.instructions[i].rtstr.length(); j < 5; j++) {
+
             s4.append("0");
+
         }
+
+
 
         s4.append(instructionMem.instructions[i].rtstr);
 
+
+
         instructionMem.instructions[i].rtstr = s4.toString();
+
+
 
         instructionMem.instructions[i].shiftamountstr = Integer.toBinaryString(instructionMem.instructions[i].shiftamount);
 
+
+
         StringBuilder s6 = new StringBuilder();
 
+
+
         for (int j = instructionMem.instructions[i].shiftamountstr.length(); j < 5; j++) {
+
             s6.append("0");
+
         }
+
+
 
         s6.append(instructionMem.instructions[i].shiftamountstr);
 
+
+
         instructionMem.instructions[i].shiftamountstr = s6.toString();
+
+
 
         instructionMem.instructions[i].functioncodestr = Integer.toBinaryString(instructionMem.instructions[i].functioncode);
 
+
+
         StringBuilder s5 = new StringBuilder();
 
+
+
         for (int j = instructionMem.instructions[i].functioncodestr.length(); j < 6; j++) {
+
             s5.append("0");
+
         }
+
+
 
         s5.append(instructionMem.instructions[i].functioncodestr);
 
+
+
         instructionMem.instructions[i].functioncodestr = s5.toString();
+
+
 
         this.instructionMem.instructions[i].machinecode = this.instructionMem.instructions[i].opcodestr + this.instructionMem.instructions[i].rsstr + this.instructionMem.instructions[i].rtstr + this.instructionMem.instructions[i].rdstr + this.instructionMem.instructions[i].shiftamountstr + this.instructionMem.instructions[i].functioncodestr;
 
+
+
     }
+
+
 
     private void assemblenor(Instruction in, int i) {
 
@@ -2912,7 +3011,6 @@ class register {
     }
 
     public int getValue() {
-
         return this.value;
 
     }
@@ -3125,7 +3223,7 @@ class ALU {
         else if (ALUSrc == 0) {
 
             switch (AluControlSignal.trim()) {
-
+               
                 case "0000": //and
 
                     result = r1 & r2;
@@ -3160,13 +3258,13 @@ class ALU {
 
                 case "1100"://nor
 
-                    result = ~(r1 | r2);
+                    result = ~(r1|r2);
 
                     break;
 
                 case "1111"://suppose "1111" is sll
 
-                    result = r1 * shamt * 2;
+                    result = r2 * shamt * 2;
 
                     break;
             }
@@ -3321,6 +3419,11 @@ class AluControl {
                         JRsignal = "0";
 
                         break;
+                    case "100111":
+                         AluControlSignal = "1100";
+                        JRsignal = "0";
+                            break;
+                            
                 }
                 break;
 
@@ -3390,6 +3493,9 @@ class Memory {
      */
     public Memory(int value) {
         this.value = value;
+    }
+    public Memory(int value,int address){
+        
     }
     /**
      * Returns the value stored inside a memory object*
@@ -3682,10 +3788,7 @@ class Memory {
         String s = byte1 + byte2 + byte3 + byte4;
         value = Integer.parseInt(s,2);
     }
-    /**
-     * Update the bytes inside the memory word when the value is overwritten
-     * using sw instruction or using write() method*
-     */
+
     public void updateValueBytes() {
         if (value >= 0) {
             String s = Integer.toBinaryString(value);
@@ -3759,11 +3862,11 @@ class DataMem {
 
     public void write(int value, int address) {
         dataMemory[address].write(value);
-        dataMemory[address].updateValueBytes();
+         dataMemory[address].updateValue();
     }
     public void setByte1(int value,int address){
         dataMemory[address].setbyte1(value);
-        
+        dataMemory[address].updateValue();
     }
      public void setByte2(int value,int address){
         dataMemory[address].setbyte2((byte)value);
@@ -3776,7 +3879,7 @@ class DataMem {
     public void setByte4(int value, int address) {
         dataMemory[address].setbyte4((byte) value);
         dataMemory[address].updateValue();
-    }
+    }  
 
     public int getByte1( int address) {
         return dataMemory[address].getB1();
