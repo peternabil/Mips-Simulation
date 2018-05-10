@@ -1801,7 +1801,7 @@ class Assembler {
             }
 
             if (splited2[1].equals(f.registers[j].name)) {
-                instructionMem.instructions[i].rs = j;
+                instructionMem.instructions[i].rt = j;
             }
 
         }
